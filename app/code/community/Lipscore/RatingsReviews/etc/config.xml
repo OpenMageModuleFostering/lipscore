@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/**
+* Module configuration
+*
+* @author oivanova
+*/
+-->
+
+<config>
+    <modules>
+        <Lipscore_RatingsReviews>
+            <version>1.1.0.0</version>
+        </Lipscore_RatingsReviews>
+    </modules>
+    
+    <global>
+        <cache>
+            <types>
+                <config_api translate="label,description" module="lipscore_ratingsreviews">
+                    <label>Lipscore Extension Configuration</label>
+                    <description>Environment configuration files.</description>
+                    <tags>CONFIG_LIPSCORE_ENV</tags>
+                </config_api>
+            </types>
+        </cache>
+    
+        <blocks>
+            <lipscore_ratingsreviews>
+                <class>Lipscore_RatingsReviews_Block</class>
+            </lipscore_ratingsreviews>
+            <review>
+                <rewrite>
+                    <helper>Lipscore_RatingsReviews_Block_Review_Helper</helper>
+                </rewrite>
+            </review>
+            <catalog>
+	            <rewrite>
+	                <product_view>Lipscore_RatingsReviews_Block_Catalog_Product_View</product_view>
+	            </rewrite>
+	        </catalog>
+        </blocks>
+        
+        <models>
+            <lipscore_ratingsreviews>
+                <class>Lipscore_RatingsReviews_Model</class>
+            </lipscore_ratingsreviews>
+        </models>
+        
+        <helpers>
+            <lipscore_ratingsreviews>
+                <class>Lipscore_RatingsReviews_Helper</class>
+            </lipscore_ratingsreviews>
+        </helpers>
+        
+        <events>
+            <controller_action_layout_load_before>
+                <observers>
+                    <lipscore_ratingsreviews>
+                        <class>lipscore_ratingsreviews/observer</class>
+                        <method>manageMageReviewModule</method>
+                    </lipscore_ratingsreviews>
+                </observers>
+            </controller_action_layout_load_before>
+            <catalog_product_collection_load_after>
+                <observers>
+                    <lipscore_ratingsreviews>
+                        <class>lipscore_ratingsreviews/observer</class>
+                        <method>addRatings</method>
+                    </lipscore_ratingsreviews>
+                </observers>
+            </catalog_product_collection_load_after>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <lipscore_ratingsreviews>
+                        <class>lipscore_ratingsreviews/observer</class>
+                        <method>addReviewsTab</method>
+                    </lipscore_ratingsreviews>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <lipscore_ratingsreviews>
+                        <class>lipscore_ratingsreviews/observer</class>
+                        <method>addReviewsFeatures</method>
+                    </lipscore_ratingsreviews>
+                </observers>
+            </core_block_abstract_to_html_after>
+        </events>
+    </global>
+    
+	<admin>
+	     <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <lipscore_ratingsreviews after="Mage_Adminhtml">Lipscore_RatingsReviews</lipscore_ratingsreviews>
+                    </modules>
+                    <frontName>lipscore</frontName>
+                </args>
+            </adminhtml>
+	     </routers>
+	</admin>    
+    
+    <frontend>
+        <layout>
+            <updates>
+                <lipscore_ratingsreviews>
+                    <file>lipscore_ratingsreviews.xml</file>
+                </lipscore_ratingsreviews>
+            </updates>
+        </layout>
+    </frontend>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <lipscore_ratingsreviews>
+                    <file>lipscore_ratingsreviews.xml</file>
+                </lipscore_ratingsreviews>
+            </updates>
+        </layout>
+    </adminhtml>
+    
+    <default>
+        <lipscore_general>
+            <api_key>
+                <api_key>889c3f3e4b6ac67269261324</api_key>
+                <demo_api_key>889c3f3e4b6ac67269261324</demo_api_key>
+            </api_key>
+            <product_identifier>
+                <type>sku</type>
+                <attr>sku</attr>
+                <brand>brand</brand>
+            </product_identifier>
+            <product_brand>
+                <attr>brand</attr>
+            </product_brand>            
+            <locale>
+                <locale>auto</locale>
+            </locale>            
+        </lipscore_general>
+        <lipscore_coupons>
+            <coupons>
+                <length>12</length>
+            </coupons>
+        </lipscore_coupons>
+    </default>
+</config>

@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/lipscore",
+    "type": "magento-module",
+    "license": "Terms-of-use",
+    "homepage": "",
+    "description": "The best new ratings and reviews extension. ",
+    "authors": [
+    {
+        "name": "Henning Frettem",
+        "email": "henning@lipscore.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <tabs>
+        <lipscore translate="label" module="lipscore_ratingsreviews">
+            <label>Lipscore</label>
+            <sort_order>500</sort_order>
+        </lipscore>
+    </tabs>
+    <sections>
+        <lipscore_general translate="label">
+            <label>General</label>
+            <tab>lipscore</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            
+            <groups>
+                <api_key translate="label">
+                    <label>Api Key</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    
+                    <fields>
+                        <api_key translate="label comment">
+                            <label>Api Key</label>
+                            <frontend_model>lipscore_ratingsreviews/system_config_form_field_apikey</frontend_model>
+                            <frontend_type>text</frontend_type>
+                            <validate>required-entry</validate>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_key>
+                    </fields>
+		        </api_key>
+		        
+                <product_identifier translate="label">
+                    <label>Product Identifier</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>200</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    
+                    <fields>
+                        <type translate="label comment">
+                            <label>Identifier Type</label>
+                            <frontend_type>select</frontend_type>
+                            <validate>required-entry</validate>
+                            <source_model>
+                                lipscore_ratingsreviews/system_config_source_identifiertype
+                            </source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </type>
+                        <attr translate="label comment">
+                            <label>Identifier Attribute</label>
+                            <frontend_type>select</frontend_type>
+                            <validate>required-entry</validate>
+                            <source_model>
+                                lipscore_ratingsreviews/system_config_source_productattr_identifier
+                            </source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </attr>
+                    </fields>
+                </product_identifier>
+                
+                <product_brand translate="label">
+                    <label>Product Brand</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>300</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <attr translate="label comment">
+                            <label>Brand Attribute</label>
+                            <comment>Optional, but strongly recommended to increase accuracy of product identification.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>
+                                lipscore_ratingsreviews/system_config_source_productattr_brand
+                            </source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </attr>
+                    </fields>
+                </product_brand>
+                
+                <locale translate="label">
+                    <label>Interface Locale</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>400</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <locale translate="label comment">
+                            <label>Locale</label>
+                            <comment>If 'Auto' is selected, the store locale will be used.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>
+                                lipscore_ratingsreviews/system_config_source_locale
+                            </source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </locale>
+                    </fields>
+                </locale>
+                
+                <reminder translate="label">
+                    <label>Reminders</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>500</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <period translate="label comment">
+                            <label>Period</label>
+                            <frontend_model>lipscore_ratingsreviews/system_config_form_field_reminderperiod</frontend_model>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>                            
+                        </period>
+                    </fields>                    
+                </reminder>                
+                
+                <dashboard_link translate="label">
+                    <label>Advanced settings</label>
+                    <frontend_model>lipscore_ratingsreviews/system_config_form_fieldset_dashboardlink</frontend_model>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>600</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                </dashboard_link>                
+            </groups>
+        </lipscore_general>
+        
+        <lipscore_coupons>
+            <label>Coupons</label>
+            <tab>lipscore</tab>
+            <frontend_type>text</frontend_type>
+            <frontend_model>lipscore_ratingsreviews/system_config_form_coupons</frontend_model>
+            <sort_order>200</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            
+            <groups>
+                <coupons translate="label">
+                    <label>Coupons</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    
+                    <fields>
+                        <rule_id translate="label comment">
+                            <label>Price Rule</label>
+                            <comment>Price rule has to use auto generation to generate multiple coupon codes. Price rule's description will be used as a coupon description.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>
+                                lipscore_ratingsreviews/system_config_source_pricerule
+                            </source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </rule_id>
+                        <length translate="label comment">
+                            <label>Code Length</label>
+                            <comment>Excluding prefix, suffix and separators.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits validate-greater-than-zero</validate>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </length>
+                        <format translate="label comment">
+                            <label>Code Format</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>
+                                salesrule/system_config_source_coupon_format
+                            </source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </format>
+                        <prefix translate="label comment">
+                            <label>Code Prefix</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </prefix>
+                        <suffix translate="label comment">
+                            <label>Code Suffix</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suffix>
+                        <dash translate="label comment">
+                            <label>Dash Every X Characters</label>
+                            <comment>If empty no separation.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits</validate>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </dash>
+                    </fields>
+                </coupons>
+                <coupons_warning translate="label">
+                    <label>Coupons</label>
+                    <frontend_model>lipscore_ratingsreviews/system_config_form_fieldset_coupons</frontend_model>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                </coupons_warning>                
+            </groups>
+        </lipscore_coupons>
+    </sections>    
+</config>
