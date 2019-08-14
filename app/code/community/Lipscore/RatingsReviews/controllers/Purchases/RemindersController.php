@@ -43,7 +43,7 @@ class Lipscore_RatingsReviews_Purchases_RemindersController extends Mage_Adminht
         }
 
         if (!count($orders)) {
-            $this->response(false, 'No completed orders found for a selected period.');
+            $this->response(false, 'No orders found for a selected period.');
         }
         
         $sender = Mage::getModel('lipscore_ratingsreviews/purchase_reminder', array(
