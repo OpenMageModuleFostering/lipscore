@@ -12,29 +12,100 @@ class Lipscore_RatingsReviews_Helper_Product extends Lipscore_RatingsReviews_Hel
     {
         $data = array();
         try {
-            $data = $this->_productData($product);
+            $data = $this->_getProductData($product);
         } catch (Exception $e) {
             Lipscore_RatingsReviews_Logger::logException($e);
         }
         return $data;
     }
     
-    protected function _productData(Mage_Catalog_Model_Product $product = null)
+    public function getRichsnippetProductData(Mage_Catalog_Model_Product $product = null)
+    {
+        $data = array();
+        try {
+            $data = $this->_getRichsnippetProductData($product);
+        } catch (Exception $e) {
+            Lipscore_RatingsReviews_Logger::logException($e);
+        }
+        return $data;
+    }
+    
+    protected function _getProductData(Mage_Catalog_Model_Product $product = null)
     {
         $product or $product = Mage::registry('product');
         
         $brandAttr = $this->_lipscoreConfig->brandAttr();
         
         return array(
-            'name'       => $product->getName(),
-            'brand'      => $this->_getAttributeValue($product, $brandAttr),
-            'sku'        => $this->_getAttributeValue($product, 'sku'),
-            'internalId' => "{$product->getId()}",
-            'url'        => $product->getProductUrl()
+            'name'         => $product->getName(),
+            'brand'        => $this->getAttributeValue($product, $brandAttr),
+            'sku_values'   => array($this->getAttributeValue($product, 'sku')),
+            'internal_id'  => "{$product->getId()}",
+            'url'          => $product->getProductUrl(),
+            'image_url'    => $this->getImageUrl($product),
+            'price'        => $this->getPrice($product),
+            'currency'     => $this->getCurrency(),
+            'category'     => $this->getCategory($product)
+        );        
+    }
+
+    public function _getRichsnippetProductData(Mage_Catalog_Model_Product $product = null)
+    {
+        $product or $product = Mage::registry('product');
+        
+        return array(
+            'description'  => $this->getDescription($product),
+            'availability' => $this->getAvailability($product)
         );        
     }
     
-    protected function _getAttributeValue(Mage_Catalog_Model_Product $product, $attrCode)
+    protected function getImageUrl(Mage_Catalog_Model_Product $product)
+    {
+        return (string) Mage::helper('catalog/image')->init($product, 'image');
+    }
+    
+    protected function getCategory($product)
+    {
+        $category = Mage::registry('current_category');
+        if (!$category) {
+            $categoryIds = $product->getCategoryIds();
+            if (isset($categoryIds[0])) {
+                $category = Mage::getModel('catalog/category')->load($categoryIds[0]);
+            }
+        }
+        return $category ? $category->getName() : '';
+    }
+    
+    protected function getAvailability(Mage_Catalog_Model_Product $product)
+    {
+        $isAvailable = $product->isAvailable();
+        if ($product->isGrouped()) {
+            $associated  = $product->getTypeInstance(true)->getAssociatedProducts($product);
+            $isAvailable = $isAvailable && count($associated);
+        }
+        return (int) $isAvailable;        
+    }
+    
+    protected function getDescription(Mage_Catalog_Model_Product $product)
+    {
+        $description = $product->getShortDescription();
+        if (!$description) {
+            $description = $product->getDescription();
+        }
+        return $description;
+    }
+    
+    protected function getPrice($product)
+    {
+        return $this->priceHelper()->getProductPrice($product);
+    }
+    
+    protected function getCurrency()
+    {
+        return Mage::app()->getStore()->getCurrentCurrencyCode();
+    }
+    
+    protected function getAttributeValue(Mage_Catalog_Model_Product $product, $attrCode)
     {
         $attr = $product->getResource()->getAttribute($attrCode);
         
@@ -48,4 +119,12 @@ class Lipscore_RatingsReviews_Helper_Product extends Lipscore_RatingsReviews_Hel
             return $product->getData($attrCode);
         }
     }
+    
+    protected function priceHelper()
+    {
+        if (!isset($this->priceHelper)) {
+            $this->priceHelper = Mage::helper('lipscore_ratingsreviews/price');
+        }
+        return $this->priceHelper;
+    }    
 }
