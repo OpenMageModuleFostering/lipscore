@@ -4,9 +4,10 @@ class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_He
 {
     protected static $complexProductTypes = array(
         Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE,
+        Mage_Catalog_Model_Product_Type::TYPE_GROUPED,
         Mage_Catalog_Model_Product_Type::TYPE_BUNDLE
     );
-    
+
     protected $productHelper  = null;
     protected $purchaseHelper = null;
     protected $couponHelper   = null;
@@ -22,70 +23,86 @@ class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_He
         parent::__construct();
     }
 
-    public function orderData(Mage_Sales_Model_Order $order)
+    public function singleReminderData(Mage_Sales_Model_Order $order)
+    {
+        $data = $this->orderData($order);
+        unset($data['purchase']['purchased_at']);
+        return $data;
+    }
+
+    public function multipleReminderData(Mage_Sales_Model_Order $order)
+    {
+        return $this->orderData($order);
+    }
+
+    protected function orderData(Mage_Sales_Model_Order $order)
     {
         $this->initConfig($order->getStoreId());
         return array(
-            'purchase' => $this->_purchaseData($order),
-            'products' => $this->_productsData($order)
+            'purchase' => $this->purchaseData($order),
+            'products' => $this->productsData($order)
         );
     }
 
-    protected function _productsData($order)
+    protected function productsData($order)
     {
-        $orderItems = $order->getAllVisibleItems();
-        $productIds = array();
-        foreach ($orderItems as $item) {
-            $productIds[] = $this->getProductIdFromOrderItem($item);
-        }
-
-        $products = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToFilter('entity_id', array('in' => $productIds))
-            ->addAttributeToSelect('*');
-
         $productsData = array();
-        foreach ($products as $product) {
-            $product->setStoreId($order->getStoreId());
-            $productsData[] = $this->_productData($product);
+        $storeId = $order->getStoreId();
+        $orderItems = $order->getAllVisibleItems();
+
+        foreach ($orderItems as $orderItem) {
+            $productId = $orderItem->getProductId();
+            $product = Mage::getModel('catalog/product')->load($productId);
+
+            $parentProductId = $this->getParentProductId($product, $orderItem);
+            if ($parentProductId) {
+                $product = Mage::getModel('catalog/product')->load($parentProductId);
+            }
+
+            $product->setStoreId($storeId);
+            $data = $this->productHelper->getProductData($product);
+
+            if (!$product->isVisibleInSiteVisibility() && !$parentProductId) {
+                $store = Mage::getModel('core/store')->load($storeId);
+                $data['url'] = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+            }
+
+            $productsData[$product->getId()] = $data;
+
+            gc_collect_cycles();
         }
 
-        return $productsData;
+        return array_values($productsData);
     }
-    
-    protected function getProductIdFromOrderItem($item)
+
+    protected function getParentProductId($product, $item)
     {
-        $productId = $item->getProductId();
-        $product   = Mage::getModel('catalog/product')->load($productId);
-        
-        if (in_array($product->getTypeId(), static::$complexProductTypes)) {
-            return $productId;
-        }
-        
         $superProductConfig = $item->getBuyRequest()->getSuperProductConfig();
         if (!empty($superProductConfig['product_id'])) {
             return (int) $superProductConfig['product_id'];
         }
-        
+
+        if ($product->isVisibleInSiteVisibility()) {
+            return;
+        }
+
+        $parentId = null;
+        $childId = $product->getId();
         $productEmulator = new Varien_Object();
         foreach (static::$complexProductTypes as $key => $typeId) {
             $productEmulator->setTypeId($typeId);
             $productType = Mage::getSingleton('catalog/product_type')->factory($productEmulator);
-            $parentIds = $productType->getParentIdsByChild($productId);
+            $parentIds = $productType->getParentIdsByChild($childId);
             if (!empty($parentIds[0])) {
-                $productId = $parentIds[0];
+                $parentId = $parentIds[0];
                 break;
             }
         }
-        
-        return $productId;
+
+        return $parentId;
     }
 
-    protected function _productData($product)
-    {
-        return $this->productHelper->getProductData($product);
-    }
-
-    protected function _purchaseData(Mage_Sales_Model_Order $order)
+    protected function purchaseData(Mage_Sales_Model_Order $order)
     {
         $coupon = $this->couponHelper->generateCoupon();
         $email  = $this->purchaseHelper->getEmail($order);
@@ -97,7 +114,7 @@ class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_He
             'buyer_name'       => $name,
             'discount_descr'   => $coupon ? $this->couponHelper->getCouponDescription() : '',
             'discount_voucher' => $coupon ? $coupon->getCode() : '',
-            'purchased_at'     => time(),
+            'purchased_at'     => (int) $order->getCreatedAtDate()->get(),
             'lang'             => $lang
         );
     }

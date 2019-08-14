@@ -41,7 +41,7 @@ class Lipscore_RatingsReviews_Helper_Product extends Lipscore_RatingsReviews_Hel
             'brand'        => $this->getAttributeValue($product, $brandAttr),
             'sku_values'   => array($this->getSku($product)),
             'internal_id'  => "{$product->getId()}",
-            'url'          => $product->getProductUrl(),
+            'url'          => $this->getUrl($product),
             'image_url'    => $this->getImageUrl($product),
             'price'        => $this->getPrice($product),
             'currency'     => $this->getCurrency(),
@@ -57,6 +57,11 @@ class Lipscore_RatingsReviews_Helper_Product extends Lipscore_RatingsReviews_Hel
             'description'  => $this->getDescription($product),
             'availability' => $this->getAvailability($product)
         );
+    }
+
+    public function getUrl(Mage_Catalog_Model_Product $product)
+    {
+        return $product->getProductUrl(false);
     }
 
     protected function getImageUrl(Mage_Catalog_Model_Product $product)
