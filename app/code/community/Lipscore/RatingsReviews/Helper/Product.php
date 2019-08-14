@@ -62,11 +62,12 @@ class Lipscore_RatingsReviews_Helper_Product extends Lipscore_RatingsReviews_Hel
     protected function getImageUrl(Mage_Catalog_Model_Product $product)
     {
         $url = '';
+        $currentStoreId = Mage::app()->getStore()->getId();
         try {
+            Mage::app()->setCurrentStore($product->getStoreId());
             $url = (string) Mage::helper('catalog/image')->init($product, 'image');
-        } catch (Exception $e) {
-            Mage::logException($e);
-        }
+        } catch (Exception $e) {}
+        Mage::app()->setCurrentStore($currentStoreId);
         return $url;
     }
 

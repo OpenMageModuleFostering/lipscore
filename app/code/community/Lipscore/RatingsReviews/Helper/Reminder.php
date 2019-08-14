@@ -2,6 +2,11 @@
 
 class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_Helper_Abstract
 {
+    protected static $complexProductTypes = array(
+        Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE,
+        Mage_Catalog_Model_Product_Type::TYPE_BUNDLE
+    );
+    
     protected $productHelper  = null;
     protected $purchaseHelper = null;
     protected $couponHelper   = null;
@@ -31,19 +36,48 @@ class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_He
         $orderItems = $order->getAllVisibleItems();
         $productIds = array();
         foreach ($orderItems as $item) {
-            $productIds[] = $item->getProductId();
+            $productIds[] = $this->getProductIdFromOrderItem($item);
         }
 
         $products = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToFilter('entity_id', array('in' => $productIds))
-            ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes());
+            ->addAttributeToSelect('*');
 
         $productsData = array();
         foreach ($products as $product) {
+            $product->setStoreId($order->getStoreId());
             $productsData[] = $this->_productData($product);
         }
 
         return $productsData;
+    }
+    
+    protected function getProductIdFromOrderItem($item)
+    {
+        $productId = $item->getProductId();
+        $product   = Mage::getModel('catalog/product')->load($productId);
+        
+        if (in_array($product->getTypeId(), static::$complexProductTypes)) {
+            return $productId;
+        }
+        
+        $superProductConfig = $item->getBuyRequest()->getSuperProductConfig();
+        if (!empty($superProductConfig['product_id'])) {
+            return (int) $superProductConfig['product_id'];
+        }
+        
+        $productEmulator = new Varien_Object();
+        foreach (static::$complexProductTypes as $key => $typeId) {
+            $productEmulator->setTypeId($typeId);
+            $productType = Mage::getSingleton('catalog/product_type')->factory($productEmulator);
+            $parentIds = $productType->getParentIdsByChild($productId);
+            if (!empty($parentIds[0])) {
+                $productId = $parentIds[0];
+                break;
+            }
+        }
+        
+        return $productId;
     }
 
     protected function _productData($product)
