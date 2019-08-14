@@ -52,11 +52,11 @@ class Lipscore_RatingsReviews_Helper_Reminder extends Lipscore_RatingsReviews_He
     {
         $data = $this->productHelper->getProductData($product);
         return array(
-            'name'      => $data['name'],
-            'brand'     => $data['brand'],
-            'id_type'   => $data['idType'],
-            'id_values' => array($data['id']),
-            'url'       => $data['url'],
+            'name'        => $data['name'],
+            'brand'       => $data['brand'],
+            'sku_values'  => array($data['sku']),
+            'internal_id' => $data['internalId'],
+            'url'         => $data['url'],
         );
     }
     
